@@ -1,6 +1,6 @@
 class MailService {
-  async sendMail() {
-    
+  async sendMail(to, link) {
+
   };
 };
 
