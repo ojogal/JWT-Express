@@ -3,15 +3,17 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const router = require('./routes/index.js');
 
 const app = express();
 const PORT = process.env.PORT || 4001;
 
+mongoose.set('strictQuery', true);
+dotenv.config();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
-dotenv.config();
-mongoose.set('strictQuery', true);
+app.use('/api', router);
 
 const start = async () => {
   try {
