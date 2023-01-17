@@ -11,6 +11,7 @@ class TokenService {
       payload, 
       process.env.JWT_REFRESH_KEY, 
       { expiresIn: '10d' });
+      
     return {
       accessToken,
       refreshToken
@@ -26,7 +27,7 @@ class TokenService {
     };
 
     const token = await Token.create({ user: userId, refreshToken });
-    
+
     return token
   };
 };
