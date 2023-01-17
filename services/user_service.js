@@ -26,6 +26,18 @@ class UserService {
       user: userDto
     }
   };
+
+  async activate(link) {
+    const user = await User.findOne({ link });
+
+    if (!user) {
+      throw new Error('Incorrect activation link')
+    };
+
+    user.isActivated = true;
+    user.save();
+    
+  };
 };
 
 module.exports = new UserService()
