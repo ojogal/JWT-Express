@@ -36,7 +36,7 @@ class UserController {
 
   async activate(req, res, next) {
     try {
-
+      
     } catch (e) {
       console.log(e)
     }
