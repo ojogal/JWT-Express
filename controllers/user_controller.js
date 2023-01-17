@@ -1,4 +1,4 @@
-const { registration } = require('../services/user_service.js');
+const { registration, activate } = require('../services/user_service.js');
 
 class UserController {
   async registration(req, res, next) {
@@ -36,7 +36,10 @@ class UserController {
 
   async activate(req, res, next) {
     try {
-      
+      const activationLink = req.params.link;
+      await activate(activationLink);
+
+      return res.redirect(process.env.CLIENT_URL)
     } catch (e) {
       console.log(e)
     }
