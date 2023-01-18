@@ -6,12 +6,19 @@ const { generateToken,
         saveToken,
         validateAccessToken,
         validateRefreshToken,
-        findToken
+        findToken,
+        removeToken
       } = require('./token_service.js');
 const UserDto = require('../dtos/user_dto.js');
 const ApiError = require('../exceptions/error.js');
 
 class UserService {
+  async index() {
+    const users = await User.find();
+
+    return users
+  };
+
   async registration(email, password) {
     const candidate = await User.findOne({ email });
 

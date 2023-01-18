@@ -3,7 +3,8 @@ const ApiError = require('../exceptions/error.js');
 const { registration, 
         activate,
         login,
-        logout
+        logout,
+        index
       } = require('../services/user_service.js');
 
 class UserController {
@@ -20,7 +21,8 @@ class UserController {
       res.cookie(
         'RefreshToken', 
         userData.refreshToken, 
-        { maxAge: 30*24*60*60*1000,
+        { 
+          maxAge: 30*24*60*60*1000,
           httpOnly: true
         });
 
@@ -37,7 +39,8 @@ class UserController {
       res.cookie(
         'RefreshToken', 
         userData.refreshToken, 
-        { maxAge: 30,
+        { 
+          maxAge: 30,
           httpOnly: true
         });
 
@@ -77,7 +80,8 @@ class UserController {
       res.cookie(
         'RefreshToken',
         userData.refreshToken,
-        { maxAge: 30*24*60*60*1000,
+        { 
+          maxAge: 30*24*60*60*1000,
           httpOnly: true
         });
     } catch (e) {
@@ -87,7 +91,9 @@ class UserController {
   
   async index(req, res, next) {
     try {
+      const users = await index();
 
+      return res.status(200).json(users)
     } catch (e) {
       next(e)
     }

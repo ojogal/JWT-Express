@@ -1,5 +1,6 @@
 const Router = require('express').Router;
 const { body } = require('express-validator');
+const authMiddle = require('./middlewares/auth_middleware.js');
 const { registration, 
         login,
         refresh,
@@ -10,17 +11,16 @@ const { registration,
 
 const router = new Router();
 
-router.get('/users', 
-            body('email').isEmail(), 
-            index);
+router.get('/users', authMiddle, index);
 
-router.get('/activate/:link', 
-            body('password').isLength({ min: 4, max: 32 }), 
-            activate);
+router.get('/activate/:link', activate);
 
 router.get('/refresh', refresh);
 
-router.post('/registration', registration);
+router.post('/registration', 
+              body('password').isLength({ min: 4, max: 32 }),
+              body('email').isEmail(), 
+              registration);
 
 router.post('/login', login);
 
