@@ -30,6 +30,12 @@ class TokenService {
 
     return token
   };
+
+  async removeToken(refreshToken) {
+    const tokenData = await Token.deleteOne({ refreshToken });
+
+    return tokenData
+  }
 };
 
 module.exports = new TokenService()

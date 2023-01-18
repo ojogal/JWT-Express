@@ -61,6 +61,12 @@ class UserService {
       ...tokens,
       user: userDto
     }
+  };
+
+  async logout(refreshToken) {
+    const token = await removeToken(refreshToken);
+    
+    return token
   }
 };
 

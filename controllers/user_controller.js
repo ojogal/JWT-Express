@@ -2,7 +2,8 @@ const { validationResult } = require('express-validator');
 const ApiError = require('../exceptions/error.js');
 const { registration, 
         activate,
-        login 
+        login,
+        logout
       } = require('../services/user_service.js');
 
 class UserController {
@@ -48,7 +49,11 @@ class UserController {
 
   async logout(req, res, next) {
     try {
+      const { refreshToken } = req.cookies;
+      const token = await logout(refreshToken);
+      res.clearCookie('refreshToken');
 
+      return res.status(200).json(token)
     } catch (e) {
       next(e)
     }
