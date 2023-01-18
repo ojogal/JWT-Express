@@ -1,4 +1,5 @@
 const Router = require('express').Router;
+const { body } = require('express-validator');
 const { registration, 
         login,
         refresh,
@@ -9,9 +10,13 @@ const { registration,
 
 const router = new Router();
 
-router.get('/users', index);
+router.get('/users', 
+            body('email').isEmail(), 
+            index);
 
-router.get('/activate/:link', activate);
+router.get('/activate/:link', 
+            body('password').isLength({ min: 4, max: 32 }), 
+            activate);
 
 router.get('/refresh', refresh);
 
