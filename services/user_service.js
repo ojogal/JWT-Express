@@ -4,13 +4,14 @@ const uuid = require('uuid');
 const { sendEmail } = require('./mail_service.js');
 const { generateToken, saveToken } = require('./token_service.js');
 const UserDto = require('../dtos/user_dto.js');
+const ApiError = require('../exceptions/error.js');
 
 class UserService {
   async registration(email, password) {
     const candidate = await User.findOne({ email });
 
     if (candidate) {
-      throw new Error('User with such email already exists')
+      throw ApiError.BadRequest('User with such email already exists')
     };
 
     const activationLink = uuid.v4();
@@ -31,7 +32,7 @@ class UserService {
     const user = await User.findOne({ link });
 
     if (!user) {
-      throw new Error('Incorrect activation link')
+      throw ApiError.BadRequest('Incorrect activation link')
     };
 
     user.isActivated = true;
