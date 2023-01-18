@@ -39,6 +39,29 @@ class UserService {
     user.save();
     
   };
+
+  async login(email, password) {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw ApiError.BadRequest('Brukker ikke funnet');
+    };
+
+    const passCompare = await bcrypt.compare(password, user.password);
+
+    if (!passCompare) {
+      throw ApiError.BadRequest('Passordet er feil');
+    };
+    
+    const userDto = new UserDto(user);
+    const tokens = generateToken({ ...userDto });
+    await saveToken(userDto.id, tokens.refreshToken);
+
+    return {
+      ...tokens,
+      userDto
+    }
+  }
 };
 
 module.exports = new UserService()

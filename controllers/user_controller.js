@@ -1,6 +1,9 @@
-const { registration, activate } = require('../services/user_service.js');
 const { validationResult } = require('express-validator');
 const ApiError = require('../exceptions/error.js');
+const { registration, 
+        activate,
+        login 
+      } = require('../services/user_service.js');
 
 class UserController {
   async registration(req, res, next) {
@@ -28,7 +31,16 @@ class UserController {
 
   async login(req, res, next) {
     try {
+      const { email, password } = req.body;
+      const userData = await login(email, password);
+      res.cookie(
+        'AccessToken', 
+        userData.accessToken, 
+        { maxAge: 30,
+          httpOnly: true
+        });
 
+      return res.json(userData)
     } catch (e) {
       next(e)
     }
