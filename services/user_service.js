@@ -2,7 +2,12 @@ const User = require('../models/user.js');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const { sendEmail } = require('./mail_service.js');
-const { generateToken, saveToken } = require('./token_service.js');
+const { generateToken, 
+        saveToken,
+        validateAccessToken,
+        validateRefreshToken,
+        findToken
+      } = require('./token_service.js');
 const UserDto = require('../dtos/user_dto.js');
 const ApiError = require('../exceptions/error.js');
 
@@ -65,8 +70,31 @@ class UserService {
 
   async logout(refreshToken) {
     const token = await removeToken(refreshToken);
-    
+
     return token
+  };
+
+  async refresh(refreshToken) {
+    if (!refreshToken) {
+      throw ApiError.UnauthorizedErorr()
+    };
+
+    const userData = validateRefreshToken(refreshToken);
+    const tokenInDB = await findToken(refreshToken);
+
+    if (!userData || !tokenInDB) {
+      throw ApiError.UnauthorizedErorr()
+    };
+
+    const user = await User.findById(userData.id);
+    const userDto = new UserDto(user);
+    const tokens = generateToken({ ...UserDto });
+    await saveToken(userDto.id, tokens.refreshToken);
+
+    return {
+      ...tokens,
+      user: userDto
+    }
   }
 };
 

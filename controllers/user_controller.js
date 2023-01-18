@@ -35,8 +35,8 @@ class UserController {
       const { email, password } = req.body;
       const userData = await login(email, password);
       res.cookie(
-        'AccessToken', 
-        userData.accessToken, 
+        'RefreshToken', 
+        userData.refreshToken, 
         { maxAge: 30,
           httpOnly: true
         });
@@ -72,7 +72,14 @@ class UserController {
 
   async refresh(req, res, next) {
     try {
-
+      const { refreshToken } = req.cookies;
+      const userData = await refresh(refreshToken);
+      res.cookie(
+        'RefreshToken',
+        userData.refreshToken,
+        { maxAge: 30*24*60*60*1000,
+          httpOnly: true
+        });
     } catch (e) {
       next(e)
     }
